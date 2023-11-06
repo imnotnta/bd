@@ -46,14 +46,14 @@ def initialize_driver():
     return driver
 
 class TwitterCrawler:
-    def __init__(self, producer: KafkaProducer = None, hashtags: list = None, kaggle = False):
-        if not kaggle:
+    def __init__(self, producer: KafkaProducer = None, hashtags: list = None, kaggle = 0):
+        if kaggle == 0:
             chrome_options = Options()
             chrome_options.add_argument("--incognito")
             chrome_options.add_argument("--window-size=1920x1080")
             self.driver = webdriver.Chrome(ChromeDriverManager().install(), options = chrome_options)
         else:
-            driver = initialize_driver()
+            self.driver = initialize_driver()
         self.hashtags = hashtags
         self.producer = producer
         self.groups = []
@@ -385,6 +385,7 @@ if __name__ == "__main__":
 
     # Add arguments
     parser.add_argument('--tag', type = str, help='Hashtag you want to crawl', default='DeFi')
+    parser.add_argument('--kaggle', type = int, help='Hashtag you want to crawl', default=0)
 
     # Parse the arguments
     args = parser.parse_args()
@@ -392,7 +393,7 @@ if __name__ == "__main__":
     producer = KafkaProducer(bootstrap_servers=['34.142.194.212:29092'])
     hashtags = ["btc"]
 
-    crawler = TwitterCrawler(producer, hashtags)
+    crawler = TwitterCrawler(producer, hashtags, kaggle = args.kaggle)
     crawler.log_in('thean9a1','theanD123')
     #crawler.crawl_all_username()
     crawler.crawl_all_users(args.tag)
