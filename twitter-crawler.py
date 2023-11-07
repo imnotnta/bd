@@ -281,14 +281,14 @@ class TwitterCrawler:
                         break
             #Scroll down
             self.driver.execute_script(f"window.scrollTo(0,{3000*iter})")
-            time.sleep(2)
+            time.sleep(1)
             iter+= 1
         
         return tweet_dict
     
     def retrieve_basic_user_info(self,username):
         self.driver.get(f'https://twitter.com/{username}')
-        time.sleep(4)
+        time.sleep(2)
         user_info = self.driver.find_elements("xpath",f'//script[@type="application/ld+json"]')
         jsontext = json.loads(user_info[0].get_attribute('innerHTML'))
         try:
@@ -402,6 +402,8 @@ if __name__ == "__main__":
     parser.add_argument('--kaggle', type = int, help='Crawl mode, 0 is local, 1 is kaggle', default=0)
     parser.add_argument('--start', type = int, help='start index in hashtag list (default 0)', default=None)
     parser.add_argument('--end', type = int, help='end index in hashtag list (default max)', default=None)
+    parser.add_argument('--username', type = str, help='Twitter username', default=None)
+    parser.add_argument('--password', type = str, help='Twitter password', default=None)
 
     # Parse the arguments
     args = parser.parse_args()
@@ -410,7 +412,7 @@ if __name__ == "__main__":
     hashtags = ["btc"]
 
     crawler = TwitterCrawler(producer, hashtags, kaggle = args.kaggle)
-    crawler.log_in('thean9a1','theanD123')
+    crawler.log_in(args.username,args.password)
     #crawler.crawl_all_username()
     crawler.crawl_all_users(args.tag,args.start,args.end)
     print('Finish crawling all hashtags')
