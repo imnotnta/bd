@@ -281,14 +281,14 @@ class TwitterCrawler:
                         break
             #Scroll down
             self.driver.execute_script(f"window.scrollTo(0,{3000*iter})")
-            time.sleep(1)
+            time.sleep(2)
             iter+= 1
         
         return tweet_dict
     
     def retrieve_basic_user_info(self,username):
         self.driver.get(f'https://twitter.com/{username}')
-        time.sleep(2)
+        time.sleep(4)
         user_info = self.driver.find_elements("xpath",f'//script[@type="application/ld+json"]')
         jsontext = json.loads(user_info[0].get_attribute('innerHTML'))
         try:
