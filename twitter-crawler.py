@@ -64,20 +64,22 @@ class TwitterCrawler:
 
     def log_in(self, username, password, phone_number):
         self.driver.get("https://twitter.com/")
-        time.sleep(2)
+        time.sleep(3)
         self.driver.find_element("xpath","//a[@href='/login']").click()
-        time.sleep(2)
+        time.sleep(3)
         self.driver.find_element("xpath","//label").click()
+        time.sleep(2)
         self.driver.find_element("xpath","//label").send_keys(username)
         self.driver.find_element("xpath",'//div[@role="button" and contains(@style,"background-color")]').click()
-        time.sleep(2)
+        time.sleep(3)
         self.driver.find_elements("xpath",'//input')[1].send_keys(password)
         self.driver.find_element("xpath",'//div[@data-testid="LoginForm_Login_Button"]').click()
 
-        time.sleep(2)
+        time.sleep(3)
         try:
             self.driver.find_elements("xpath","//input")[0].send_keys('0'+phone_number)
-            self.driver.find_element("xpath",'//div[@role="button" and contains(@style,"background-color")]').click()
+            time.sleep(2)
+            self.driver.find_element("xpath",'//div[@data-testid="ocfEnterTextNextButton"]').click()
             time.sleep(3)
         except:
             time.sleep(3)
