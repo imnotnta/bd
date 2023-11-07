@@ -373,21 +373,21 @@ class TwitterCrawler:
             start = 0
         if end == None:
             end = len(user_names)
-        for user in tqdm(range(start,end)):
-            if user in crawled_users:
-                print("Already crawled user: ", user)
+        for idx in tqdm(range(start,end)):
+            if user_names[idx] in crawled_users:
+                print("Already crawled user: ", user_names[idx])
                 continue
             #user_info = self.retrieve_basic_user_info(user)
             
             try:
-                user_info = self.retrieve_basic_user_info(user)
+                user_info = self.retrieve_basic_user_info(user_names[idx])
             except:
-                print("Error when crawling user: ", user)
+                print("Error when crawling user: ", user_names[idx])
                 continue
             
-            self.write_user_info_to_file(hashtag, user_info, user)
-            self.write_user_info_to_kafka(hashtag, user_info, user)
-            print('Finish crawling user: ', user)
+            self.write_user_info_to_file(hashtag, user_info, user_names[idx])
+            self.write_user_info_to_kafka(hashtag, user_info, user_names[idx])
+            print('Finish crawling user: ', user_names[idx])
             wait_idx += 1
             if wait_idx % 15 == 0:
                 time.sleep(60*3)
