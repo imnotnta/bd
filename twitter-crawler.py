@@ -366,8 +366,9 @@ class TwitterCrawler:
     def crawl_all_users(self, hashtag, start, end):
         user_names = self.load_username(hashtag)
         wait_idx = 0
-        crawled_users = self.load_crawled_username(hashtag)
         os.makedirs(f"{self.save_file}/user_info/{hashtag}", exist_ok=True)
+
+        crawled_users = self.load_crawled_username(hashtag)
         if start == None: 
             start = 0
         if end == None:
