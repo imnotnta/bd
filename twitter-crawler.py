@@ -62,7 +62,7 @@ class TwitterCrawler:
         os.makedirs(f"{self.save_file}/groups", exist_ok=True)
         os.makedirs(f"{self.save_file}/user_info", exist_ok=True)
 
-    def log_in(self, username, password):
+    def log_in(self, username, password, phone_number):
         self.driver.get("https://twitter.com/")
         time.sleep(2)
         self.driver.find_element("xpath","//a[@href='/login']").click()
@@ -73,7 +73,14 @@ class TwitterCrawler:
         time.sleep(2)
         self.driver.find_elements("xpath",'//input')[1].send_keys(password)
         self.driver.find_element("xpath",'//div[@data-testid="LoginForm_Login_Button"]').click()
-        time.sleep(3)
+
+        time.sleep(2)
+        try:
+            self.driver.find_elements("xpath","//input")[0].send_keys('0'+phone_number)
+            self.driver.find_element("xpath",'//div[@role="button" and contains(@style,"background-color")]').click()
+            time.sleep(3)
+        except:
+            time.sleep(3)
         
     def crawl_username_from_hashtag(self,hashtag):
         list_users = []
@@ -405,6 +412,7 @@ if __name__ == "__main__":
     parser.add_argument('--end', type = int, help='end index in hashtag list (default max)', default=None)
     parser.add_argument('--username', type = str, help='Twitter username', default=None)
     parser.add_argument('--password', type = str, help='Twitter password', default=None)
+    parser.add_argument('--phone', type = str, help='Twitter account phone number', default=None)
 
     # Parse the arguments
     args = parser.parse_args()
@@ -413,7 +421,7 @@ if __name__ == "__main__":
     hashtags = ["btc"]
 
     crawler = TwitterCrawler(producer, hashtags, kaggle = args.kaggle)
-    crawler.log_in(args.username,args.password)
+    crawler.log_in(args.username,args.password, args.phone)
     #crawler.crawl_all_username()
     crawler.crawl_all_users(args.tag,args.start,args.end)
     print('Finish crawling all hashtags')
