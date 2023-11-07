@@ -47,6 +47,7 @@ def initialize_driver():
 
 class TwitterCrawler:
     def __init__(self, producer: KafkaProducer = None, hashtags: list = None, kaggle = 0):
+        self.kaggle = kaggle
         if kaggle == 0:
             chrome_options = Options()
             chrome_options.add_argument("--incognito")
@@ -83,6 +84,7 @@ class TwitterCrawler:
             time.sleep(3)
         except:
             time.sleep(3)
+        self.driver.save_screenshot('logged-in.png')
         
     def crawl_username_from_hashtag(self,hashtag):
         list_users = []
@@ -392,6 +394,8 @@ class TwitterCrawler:
                 user_info = self.retrieve_basic_user_info(user_names[idx])
             except:
                 print("Error when crawling user: ", user_names[idx])
+                if self.kaggle == 1:
+                    self.driver.save_screenshot('error-crawled.png')
                 continue
             
             self.write_user_info_to_file(hashtag, user_info, user_names[idx])
