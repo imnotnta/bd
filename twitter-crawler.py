@@ -242,33 +242,39 @@ class TwitterCrawler:
 
         return data_dict
     
-    def retrieve_tweets(self):
+    def retrieve_tweets(self, username):
         count = 0
         iter = 1
         tweet_dict = {}
         while iter < 6 and count < 20:
-            tweets = self.driver.find_elements("xpath","//article")
+            tweets = self.driver.find_elements("xpath","//article[@tabindex='0']")
             for i in range(len(tweets)):
                 tweet_time = tweets[i].find_element("xpath",".//time[@datetime and @datetime!='none']")
                 tweet_time = tweet_time.get_attribute('datetime') + ''
                 if tweet_time in tweet_dict.keys():
                     continue
                 else:
+                    if tweets[i].find_elements("xpath",f'.//a[@href="/{username}" and contains(@dir,"ltr")]') != []:
+                        repost = "True" 
+                    else:
+                        repost = "False"
                     try:    
-                        interacts = tweets[i].find_elements("xpath",f'.//div[contains(@aria-label,"view")]')[0].get_attribute('aria-label')
-                    
+                        interacts = tweets[i].find_elements("xpath",f'.//div[@role="group"]')[0].get_attribute('aria-label')
+
                         interacts = self.extract_to_dictionary(interacts)
                     except:
-                        continue
+                        interacts = {'replies': 0, 'reposts': 0, 'likes': 0, 'views': 0, 'bookmarks': 0}
                     try:
                         langs = tweets[i].find_element("xpath", f'.//div[@lang and @lang!="none"]')
+                        try:
+                            tweet_content = ' '.join([line.text for line in langs.find_elements("xpath",f".//*")])
+                        except:
+                            tweet_content = 'Video'
                     except:
                         langs = "NA"
-                    try:
-                        tweet_content = ' '.join([line.text for line in langs.find_elements("xpath",f".//*")])
-                    except:
                         tweet_content = 'Video'
-                    tweet_dict.update({tweet_time: {'Content': tweet_content, 'language': langs.get_attribute('lang') if langs != "NA" else "NA",
+
+                    tweet_dict.update({tweet_time: {'repost': repost,'content': tweet_content, 'language': langs.get_attribute('lang') if langs != "NA" else "NA",
                                                     'interacts': interacts}})
                     count += 1
                     if count == 20:
@@ -282,7 +288,7 @@ class TwitterCrawler:
     
     def retrieve_basic_user_info(self,username):
         self.driver.get(f'https://twitter.com/{username}')
-        time.sleep(3)
+        time.sleep(4)
         user_info = self.driver.find_elements("xpath",f'//script[@type="application/ld+json"]')
         jsontext = json.loads(user_info[0].get_attribute('innerHTML'))
         try:
@@ -304,11 +310,12 @@ class TwitterCrawler:
             tweets = {}
             protected = 'True' 
         else:
+            protected = 'False'
             if len(self.driver.find_elements("xpath",'//div[@data-testid="emptyState"]')) > 0:
                 tweets = {}
             else: 
-                tweets = self.retrieve_tweets()
-                protected = 'False'
+                tweets = self.retrieve_tweets(username)
+                
 
         return_dict = {'type':jsontext['author']['@type'],
                         'name':jsontext['author']['givenName'],
@@ -356,26 +363,33 @@ class TwitterCrawler:
             print('Finish crawling hashtag: ', hashtag)
             time.sleep(30*1)
         
-    def crawl_all_users(self, hashtag):
+    def crawl_all_users(self, hashtag, start, end):
         user_names = self.load_username(hashtag)
         wait_idx = 0
         crawled_users = self.load_crawled_username(hashtag)
         os.makedirs(f"{self.save_file}/user_info/{hashtag}", exist_ok=True)
-        for user in tqdm(user_names):
+        if start == None: 
+            start = 0
+        if end == None:
+            end = len(user_names)
+        for user in tqdm(range(start,end)):
             if user in crawled_users:
                 print("Already crawled user: ", user)
                 continue
+            #user_info = self.retrieve_basic_user_info(user)
+            
             try:
                 user_info = self.retrieve_basic_user_info(user)
             except:
                 print("Error when crawling user: ", user)
                 continue
+            
             self.write_user_info_to_file(hashtag, user_info, user)
             self.write_user_info_to_kafka(hashtag, user_info, user)
             print('Finish crawling user: ', user)
             wait_idx += 1
-            if wait_idx % 10 == 0:
-                time.sleep(30*1)
+            if wait_idx % 15 == 0:
+                time.sleep(60*3)
         print('Finish crawling users from hashtag: ', hashtag)
                 
 if __name__ == "__main__":
@@ -385,7 +399,9 @@ if __name__ == "__main__":
 
     # Add arguments
     parser.add_argument('--tag', type = str, help='Hashtag you want to crawl', default='DeFi')
-    parser.add_argument('--kaggle', type = int, help='Hashtag you want to crawl', default=0)
+    parser.add_argument('--kaggle', type = int, help='Crawl mode, 0 is local, 1 is kaggle', default=0)
+    parser.add_argument('--start', type = int, help='start index in hashtag list (default 0)', default=None)
+    parser.add_argument('--end', type = int, help='end index in hashtag list (default max)', default=None)
 
     # Parse the arguments
     args = parser.parse_args()
@@ -396,7 +412,7 @@ if __name__ == "__main__":
     crawler = TwitterCrawler(producer, hashtags, kaggle = args.kaggle)
     crawler.log_in('thean9a1','theanD123')
     #crawler.crawl_all_username()
-    crawler.crawl_all_users(args.tag)
+    crawler.crawl_all_users(args.tag,args.start,args.end)
     print('Finish crawling all hashtags')
     crawler.driver.close()
     crawler.driver.quit()
