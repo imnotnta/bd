@@ -7,7 +7,8 @@ folder_src = os.path.join(*folder)
 lf_src = os.listdir(folder_src)
 
 folder_dst = folder[-1]
-print(f"Num files in destination folder = {len(os.listdir(folder_dst))}")
+print(f"Num file in source folder = {len(lf_src)}")
+print(f"Num file in destination folder = {len(os.listdir(folder_dst))}")
 
 count = 0
 for name in lf_src:
