@@ -12,7 +12,7 @@ cryptotrading.pkl: 414
 stablecoin.pkl: 115
 
 An
-DeFi.pkl: 8877
+DeFi.pkl: 8877 [1250,2000] [6840, 7000] [5000, 6000]
 fintech.pkl: 4285
 web3.pkl: 8356
 
