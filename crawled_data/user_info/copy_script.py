@@ -2,7 +2,7 @@ import os
 import shutil
 
 # folder = ['2', 'bd', 'crawled_data', 'user_info', 'blockchain']
-folder = ['btcc', 'bd', 'crawled_data', 'user_info', 'btc']
+folder = ['blockchain1', 'bd', 'crawled_data', 'user_info', 'blockchain']
 folder_src = os.path.join(*folder)
 lf_src = os.listdir(folder_src)
 
@@ -14,7 +14,8 @@ count = 0
 for name in lf_src:
     src_path = os.path.join(folder_src, name)
     dst_path = os.path.join(folder_dst, name)
-    if not os.path.exists(dst_path) and os.stat(src_path).st_size > 1024 * 1.5: #file lớn hơn 1.5kB
+    # if not os.path.exists(dst_path) and os.stat(src_path).st_size > 1024 * 1.5: #file lớn hơn 1.5kB
+    if not os.path.exists(dst_path):
         count += 1
         shutil.copyfile(src_path, dst_path)
 
