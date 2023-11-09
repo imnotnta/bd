@@ -2,7 +2,7 @@ import os
 import shutil
 
 # folder = ['2', 'bd', 'crawled_data', 'user_info', 'blockchain']
-folder = ['blockchain1', 'bd', 'crawled_data', 'user_info', 'blockchain']
+folder = ['vatly2020', 'bd', 'crawled_data', 'user_info', 'Bitcoin']
 folder_src = os.path.join(*folder)
 lf_src = os.listdir(folder_src)
 
