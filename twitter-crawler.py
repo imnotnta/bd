@@ -206,7 +206,7 @@ class TwitterCrawler:
                         
                         actions.move_to_element(self.driver.find_elements("xpath",'//a[@href="/home"]')[0]).perform()
                         
-                        groups_dict[group_name] = {'num_member': num_member, 'num_followers': num_followers, 'members': members, 'followers': users}
+                        groups_dict[group_name] = {'num_member': num_member, 'num_followers': num_followers, 'members': list(set(members)), 'followers': list(set(users))}
                         all_users.extend(users)
                         all_users.extend(members)
                         all_users = list(set(all_users))
@@ -218,7 +218,7 @@ class TwitterCrawler:
                             pickle.dump(groups_dict[group_name], f)
                             
                         #Write to kafka
-                        self.producer.send(f"{keyword}_{group_name}", pickle.dumps(groups_dict[group_name]))
+                        #self.producer.send(f"{keyword}_{group_name}", pickle.dumps(groups_dict[group_name]))
                         with open(f"{self.save_file}/all_users/{keyword}.pkl", "wb") as f:
                             pickle.dump(all_users, f)
 
@@ -413,6 +413,8 @@ if __name__ == "__main__":
 
     # Add arguments
     parser.add_argument('--tag', type = str, help='Hashtag you want to crawl', default='DeFi')
+    parser.add_argument('--crawl_mode', type = str, help='Crawl mode: Username or user info', default='username')
+
     parser.add_argument('--kaggle', type = int, help='Crawl mode, 0 is local, 1 is kaggle', default=0)
     parser.add_argument('--start', type = int, help='start index in hashtag list (default 0)', default=None)
     parser.add_argument('--end', type = int, help='end index in hashtag list (default max)', default=None)
@@ -423,13 +425,14 @@ if __name__ == "__main__":
     # Parse the arguments
     args = parser.parse_args()
 
-    producer = KafkaProducer(bootstrap_servers=['34.142.194.212:29092'])
-    hashtags = ["btc"]
+    #producer = KafkaProducer(bootstrap_servers=['34.142.194.212:29092'])
+    hashtags = ["web3"]
 
-    crawler = TwitterCrawler(producer, hashtags, kaggle = args.kaggle)
-    crawler.log_in(args.username,args.password, args.phone)
-    #crawler.crawl_all_username()
-    crawler.crawl_all_users(args.tag,args.start,args.end)
+    crawler = TwitterCrawler(None, hashtags, kaggle = args.kaggle)
+    #crawler.log_in(args.username,args.password, args.phone)
+    time.sleep(30)
+    crawler.crawl_all_username()
+    #crawler.crawl_all_users(args.tag,args.start,args.end)
     print('Finish crawling all hashtags')
     crawler.driver.close()
     crawler.driver.quit()
