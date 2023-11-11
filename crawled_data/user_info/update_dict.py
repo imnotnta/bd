@@ -2,7 +2,7 @@ import pickle, os
 
 ######################## Đổi thông tin ở đây ####################
 dict_path = 'info.pkl'
-folders = ['huydsai02', 'vatly2020', 'nvhuy126']
+folders = ['aehuyhoang1', 'choiiiiii307', 'huymovie2002', 'huynv2002', 'nvhuy127', 'nvhuy128']
 #################################################################
 
 def save_dict(dct, path):
