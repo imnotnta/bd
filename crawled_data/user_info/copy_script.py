@@ -3,8 +3,10 @@ import shutil
 
 for typ in ['btc', 'blockchain', 'Bitcoin']:
 # folder = ['2', 'bd', 'crawled_data', 'user_info', 'blockchain']
-    folder = ['nvhuy128', 'bd', 'crawled_data', 'user_info', typ]
+    folder = ['vatly2020', typ]
     folder_src = os.path.join(*folder)
+    if not os.path.exists(folder_src):
+        continue
     lf_src = os.listdir(folder_src)
 
     folder_dst = folder[-1]
