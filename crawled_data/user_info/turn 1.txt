@@ -6,6 +6,4 @@ blockchain:
 
 Bitcoin:
     False: nvhuy127, vatly2020
-    True: 
-
-btc: huymovie2002, aehuyhoang1
+    True: aehuyhoang1, huymovie2002
