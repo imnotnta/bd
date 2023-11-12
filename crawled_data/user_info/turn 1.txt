@@ -1,1 +1,11 @@
-nvhuy126, huydsai02, vatly2020
+huydsai02, vatly2020, nvhuy126, nvhuy127, nvhuy128, aehuyhoang1, huymovie2002, huynv2002
+
+blockchain: 
+    False: huynv2002, huydsai02
+    True: nvhuy128, nvhuy126
+
+Bitcoin:
+    False: nvhuy127, vatly2020
+    True: 
+
+btc: huymovie2002, aehuyhoang1

@@ -2,7 +2,7 @@ import pickle, os
 
 ######################## Đổi thông tin ở đây ####################
 dict_path = 'info.pkl'
-folders = ['huydsai02', 'nvhuy126', 'vatly2020']
+folders = ['aehuyhoang1']
 #################################################################
 
 def save_dict(dct, path):
@@ -15,6 +15,8 @@ def read_dict(path):
     return dct
 
 dct = read_dict(dict_path)
+print("Before update:")
+print(f"Num finished = {len(dct['Finished'])}, Num Error = {len(dct['Error'])}")
 
 for folder in folders:
     with open(os.path.join(folder, 'logs.txt')) as f:
@@ -28,5 +30,7 @@ for folder in folders:
 
 dct['Finished'] = list(set(dct['Finished']))
 dct['Error'] = list(set(dct['Error']))
+print("After update:")
+print(f"Num finished = {len(dct['Finished'])}, Num Error = {len(dct['Error'])}")
 
 save_dict(dct, dict_path)
