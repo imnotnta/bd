@@ -3,7 +3,7 @@ import shutil
 
 for typ in ['btc', 'blockchain', 'Bitcoin']:
 # folder = ['2', 'bd', 'crawled_data', 'user_info', 'blockchain']
-    folder = ['aehuyhoang1', typ]
+    folder = ['vatly2020', typ]
     folder_src = os.path.join(*folder)
     if not os.path.exists(folder_src):
         continue
