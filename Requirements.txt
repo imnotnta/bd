@@ -1,3 +1,3 @@
-selenium==4.0.0
+selenium==4.7.0
 kafka-python
 webdriver_manager
