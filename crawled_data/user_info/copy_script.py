@@ -3,7 +3,7 @@ import shutil
 
 # accounts = ['aehuyhoang1', 'huynv2002', 'nvhuy127', 'nvhuy128']
 accounts = ['huydsai02', 'huymovie2002', 'nvhuy126', 'vatly2020']
-# accounts = ['nvhuy128']
+# accounts = ['nvhuy127']
 
 for account in accounts:
     for typ in ['btc', 'blockchain', 'Bitcoin', 'crypto']:
