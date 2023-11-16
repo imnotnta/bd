@@ -4,7 +4,7 @@ import pickle, os
 dict_path = 'info.pkl'
 folders = ['huydsai02', 'huymovie2002', 'nvhuy126', 'vatly2020']
 # folders = ['aehuyhoang1', 'huynv2002', 'nvhuy127', 'nvhuy128']
-# folders = ['nvhuy127']
+folders = ['huynv2002']
 #################################################################
 
 def save_dict(dct, path):
